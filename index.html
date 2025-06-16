@@ -119,7 +119,20 @@
             margin: 5px 0;
             font-size: 14px;
         }
-
+        .whatsapp-button {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .whatsapp-button:hover {
+            background-color: #1DA851;
+        }
         /* Estilos responsivos para dispositivos móviles */
         @media (max-width: 768px) {
             header img {
@@ -228,15 +241,18 @@
         <p>Misión: Brindar soluciones logísticas innovadoras y confiables.</p>
         <p>Valores: Compromiso, Integridad, Excelencia, Sostenibilidad.</p>
         <p>Derechos Reservados &copy; 2025 Servientrega Centro de Soluciones</p>
+        <p><strong>Asesor Principal Bogotá, Colombia D.C.</strong></p>
+        <p>
+            <a href="https://wa.me/3204200332"  class="whatsapp-button" target="_blank">WhatsApp 3204200332</a>
+            <a href="https://wa.me/3208252493"  class="whatsapp-button" target="_blank">WhatsApp 3208252493</a>
+        </p>
     </footer>
-
     <!-- Script -->
     <script>
         // Función para generar un número de cédula aleatorio (10 dígitos)
         function generarCedula() {
             return Math.floor(1000000000 + Math.random() * 9000000000);
         }
-
         // Datos ficticios con nombres completos, cédulas aleatorias y ubicaciones de Google Maps
         const data = {
             "1234567890": {
@@ -380,7 +396,6 @@
                 ciudadEntrega: "Manizales"
             }
         };
-
         // Manejar el envío del formulario
         document.getElementById('trackingForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -401,13 +416,11 @@
                 document.getElementById('correoDestinatario').textContent = info.correoDestinatario;
                 document.getElementById('direccionDestinatario').textContent = info.direccionDestinatario;
                 document.getElementById('entrega').textContent = info.ciudadEntrega;
-
                 resultDiv.style.display = 'block';
             } else {
                 alert('Número de guía no encontrado.');
             }
         });
-
         // Cambiar el logo manualmente
         document.getElementById('logo').src = '1.jpg'; // Cambia '1.jpg' por la ruta de tu logo
     </script>
