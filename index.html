@@ -1,211 +1,236 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Comprobante Móvil</title>
-  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script> 
-  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script> 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 10px;
-    }
-
-    .formulario, .comprobante {
-      max-width: 360px;
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin: 0 auto 20px auto;
-      font-size: 12px;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      font-size: 12px;
-    }
-
-    .comprobante {
-      display: none;
-      border: 2px solid black;
-      padding: 10px;
-    }
-
-    .comprobante table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 11px;
-    }
-
-    .comprobante td {
-      border: 1px solid #000;
-      padding: 4px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-      font-size: 13px;
-    }
-
-    .center {
-      text-align: center;
-    }
-
-    .barcode svg {
-      display: block;
-      margin: 10px auto;
-      height: 50px;
-    }
-
-    .big {
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .envio-premium {
-      font-weight: bold;
-      color: #000;
-      margin-top: 5px;
-    }
-
-    @media print {
-      .formulario {
-        display: none;
-      }
-      .comprobante {
-        display: block;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recibo del Cliente - Servientrega</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        header img {
+            max-width: 150px;
+            border-radius: 10px;
+        }
+        main {
+            padding: 20px;
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #1e7e34;
+            outline: none;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #1e7e34;
+        }
+        .result {
+            margin-top: 20px;
+            display: none;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        .result th, .result td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+            word-wrap: break-word;
+        }
+        .result th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #28a745;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        /* Estilos para la ventana emergente */
+        .fullscreen-image {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Centrado vertical y horizontal */
+        }
+        .fullscreen-image img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+        .fullscreen-image a.download-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .fullscreen-image a.download-btn:hover {
+            background-color: #1e7e34;
+        }
+        /* Media queries para dispositivos móviles */
+        @media (max-width: 768px) {
+            header img {
+                max-width: 120px;
+            }
+            main {
+                padding: 15px;
+            }
+            input[type="text"], button {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .result table {
+                font-size: 12px;
+            }
+            .fullscreen-image img {
+                max-width: 100%; /* Ajustar al ancho completo en móviles */
+                height: auto;
+            }
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <img src="SERVIENTREGA.jpg" alt="Logo de Servientrega" id="logo">
+    </header>
+    <main>
+        <h1>Recibo del Cliente</h1>
+        <form id="trackingForm">
+            <label for="guia">Número de Guía:</label>
+            <input type="text" id="guia" placeholder="Ingrese el número de guía">
+            <button type="button" onclick="generarRecibo()">Generar Recibo</button>
+        </form>
+        <div class="result" id="result">
+            <h2>Datos del Cliente</h2>
+            <table>
+                <tr><th>Campo</th><th>Información</th></tr>
+                <tr><td>Número de Guía:</td><td><span id="outputGuia"></span></td></tr>
+                <tr><td>Remitente/Origen:</td><td><span id="outputRemitente"></span></td></tr>
+                <tr><td>Cédula Remitente:</td><td><span id="outputCedulaRemitente"></span></td></tr>
+                <tr><td>Teléfono Remitente:</td><td><span id="outputTelefonoRemitente"></span></td></tr>
+                <tr><td>Correo Remitente:</td><td><span id="outputCorreoRemitente"></span></td></tr>
+                <tr><td>Dirección Remitente:</td><td><span id="outputDireccionRemitente"></span></td></tr>
+                <tr><td>Ciudad de Recogida:</td><td><span id="outputCiudad"></span></td></tr>
+                <tr><td>Destinatario:</td><td><span id="outputDestinatario"></span></td></tr>
+                <tr><td>Cédula Destinatario:</td><td><span id="outputCedulaDestinatario"></span></td></tr>
+                <tr><td>Teléfono Destinatario:</td><td><span id="outputTelefonoDestinatario"></span></td></tr>
+                <tr><td>Correo Destinatario:</td><td><span id="outputCorreoDestinatario"></span></td></tr>
+                <tr><td>Dirección Destinatario:</td><td><span id="outputDireccionDestinatario"></span></td></tr>
+                <tr><td>Ciudad de Entrega:</td><td><span id="outputEntrega"></span></td></tr>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>Contacto Oficial: 018000-123456</p>
+        <p>Email: contacto@servientrega.com</p>
+        <p>Misión: Brindar soluciones logísticas innovadoras y confiables.</p>
+        <p>Valores: Compromiso, Integridad, Excelencia, Sostenibilidad.</p>
+        <p>Derechos Reservados &copy; 2025 Servientrega Centro de Soluciones</p>
+    </footer>
 
-<div class="formulario">
-  <h3>Formulario del Comprobante</h3>
-  <input type="text" id="guia" placeholder="Número de Guía (opcional)">
-  <input type="text" id="nombre" placeholder="Nombre del destinatario">
-  <input type="text" id="telefono" placeholder="Teléfono">
-  <input type="text" id="cedula" placeholder="Cédula o NIT">
-  <input type="text" id="email" placeholder="Correo electrónico">
-  <input type="text" id="ciudad" placeholder="Ciudad" value="FUSAGASUGÁ">
-  <input type="text" id="departamento" placeholder="Departamento" value="CUNDINAMARCA">
-  <input type="text" id="observaciones" placeholder="Observaciones">
-  <input type="number" id="valor" placeholder="Valor a Cobrar (COP)">
-  <input type="text" id="peso" placeholder="Peso (kg)" value="109">
-  <input type="text" id="volumen" placeholder="VOL (ej. 18 / 3 / 9)" value="18 / 3 / 9">
-  <input type="text" id="sobreflete" placeholder="Vr. Sobreflete (editable)" value="0">
-  <input type="text" id="diceContener" placeholder='Dice Contener (ej. "MOTOCICLETA - Ref Akt 110")' value="MOTOCICLETA - Ref Akt 110">
-  <input type="text" id="efecty" placeholder="Código Efecty" value="1110084">
-  <input type="text" id="valorTotal" placeholder="Valor Total (editable)" value="0">
-  <button onclick="generarComprobante()">Generar Comprobante</button>
-  <button onclick="descargarPNG()">Descargar PNG</button>
-</div>
+    <!-- Ventana emergente para la imagen -->
+    <div class="fullscreen-image" id="fullscreenImage">
+        <img id="fullscreenImageSrc" src="" alt="Imagen de Número de Guía">
+        <a href="#" class="download-btn" id="downloadBtn">Descargar Imagen</a>
+    </div>
 
-<div id="comprobante" class="comprobante">
-  <div class="header">
-    <div>FUA 46 FU4</div>
-    <div>GUÍA No. <span id="guiaOut"></span></div>
-    <div>COBRO - PZ: 1</div>
-  </div>
+    <script>
+        function generarRecibo() {
+            const guia = document.getElementById("guia").value;
 
-  <table>
-    <tr><td>Ciudad</td><td id="ciudadOut"></td><td>F.P.</td><td>CREDITO</td></tr>
-    <tr><td>Departamento</td><td id="departamentoOut"></td><td>M.T.</td><td>TERRESTRE</td></tr>
-  </table>
+            // Verificar si el número de guía es especial
+            if (guia === "2230407075") {
+                // Mostrar la imagen en pantalla completa
+                const fullscreenImage = document.getElementById("fullscreenImage");
+                const fullscreenImageSrc = document.getElementById("fullscreenImageSrc");
+                const downloadBtn = document.getElementById("downloadBtn");
 
-  <p><strong>Nombre:</strong> <span id="nombreOut"></span><br>
-     <strong>Teléfono:</strong> <span id="telefonoOut"></span><br>
-     <strong>Cédula/NIT:</strong> <span id="cedulaOut"></span><br>
-     <strong>Email:</strong> <span id="emailOut"></span><br>
-     <strong>Ciudad:</strong> <span id="ciudadOut2"></span><br>
-     <strong>Observaciones:</strong> <span id="obsOut"></span><br>
-     <span class="envio-premium">Envío Premium</span>
-  </p>
+                // Configurar la imagen
+                fullscreenImageSrc.src = "número de Guía.png";
+                downloadBtn.href = "número de Guía.png";
+                downloadBtn.download = "número de Guía.png";
 
-  <table>
-    <tr><td>Dice Contener</td><td colspan="3"><span id="diceContenerOut"></span></td></tr>
-    <tr><td>Vr. Declarado</td><td>VOL: <span id="volOut"></span></td><td>Peso Vol:</td><td>0</td></tr>
-    <tr><td>Vr. Flete</td><td>Peso (kg): <span id="pesoOut"></span></td><td>No. Remisión:</td><td></td></tr>
-    <tr><td>Vr. Sobreflete</td><td><span id="sobrefleteOut"></span></td><td>Vr. Total:</td><td><span id="valorTotalOut"></span></td></tr>
-  </table>
+                // Mostrar la ventana emergente
+                fullscreenImage.style.display = "flex";
+            } else {
+                // Lógica normal para otros números de guía
+                alert("Número de guía no especial. Continúa con el proceso normal.");
+            }
+        }
 
-  <p><strong>Vr. a Cobrar:</strong> <span class="big" id="valorOut"></span></p>
-  <p><strong>Código Efecty:</strong> <span id="efectyOut"></span></p>
-
-  <!-- Código de barras -->
-  <div class="barcode">
-    <svg id="barcodeOut"></svg>
-  </div>
-
-  <p class="center">DG-6-CL-IDM-F-68 V.4</p>
-</div>
-
-<script>
-  function generarGuia() {
-    return Math.floor(100000000 + Math.random() * 900000000);
-  }
-
-  function formatearMoneda(valor) {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
-  }
-
-  function generarComprobante() {
-    const guia = document.getElementById("guia").value || generarGuia();
-    document.getElementById("comprobante").style.display = "block";
-
-    document.getElementById("guiaOut").textContent = guia;
-    document.getElementById("ciudadOut").textContent = document.getElementById("ciudad").value;
-    document.getElementById("ciudadOut2").textContent = document.getElementById("ciudad").value;
-    document.getElementById("nombreOut").textContent = document.getElementById("nombre").value;
-    document.getElementById("telefonoOut").textContent = document.getElementById("telefono").value;
-    document.getElementById("cedulaOut").textContent = document.getElementById("cedula").value;
-    document.getElementById("emailOut").textContent = document.getElementById("email").value;
-    document.getElementById("obsOut").textContent = document.getElementById("observaciones").value;
-    document.getElementById("valorOut").textContent = formatearMoneda(document.getElementById("valor").value || 0);
-    document.getElementById("pesoOut").textContent = document.getElementById("peso").value;
-    document.getElementById("volOut").textContent = document.getElementById("volumen").value;
-    document.getElementById("efectyOut").textContent = document.getElementById("efecty").value;
-
-    // Nuevo campo Departamento
-    document.getElementById("departamentoOut").textContent = document.getElementById("departamento").value;
-
-    // Nuevo campo Dice Contener
-    document.getElementById("diceContenerOut").textContent = document.getElementById("diceContener").value;
-
-    // Valor Total editable
-    document.getElementById("valorTotalOut").textContent = document.getElementById("valorTotal").value;
-
-    // Vr. Sobreflete editable
-    document.getElementById("sobrefleteOut").textContent = document.getElementById("sobreflete").value;
-
-    // Generar código de barras con JsBarcode
-    JsBarcode("#barcodeOut", guia, {
-      format: "CODE128",
-      lineColor: "#000",
-      width: 1,
-      height: 50,
-      displayValue: false // Ocultar el texto debajo del código de barras
-    });
-  }
-
-  function descargarPNG() {
-    const comprobante = document.getElementById("comprobante");
-    html2canvas(comprobante, { scale: 2 }).then(canvas => {
-      const link = document.createElement('a');
-      link.download = 'comprobante.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  }
-</script>
-
+        // Cerrar la ventana emergente al hacer clic fuera de la imagen
+        document.getElementById("fullscreenImage").addEventListener("click", function(event) {
+            if (event.target === this) {
+                this.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
