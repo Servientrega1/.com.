@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recibo del Cliente - Servientrega</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('1.jpg'); /* Imagen de fondo */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #333;
+        }
+        header {
+            background-color: #28a745; /* Verde profesional */
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        header img {
+            max-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        main {
+            padding: 30px;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.95); /* Fondo semitransparente */
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #28a745; /* Verde profesional */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            margin-top: 5px;
+            border: 2px solid #28a745; /* Verde profesional */
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #1e7e34; /* Verde oscuro al enfocar */
+            outline: none;
+        }
+        button {
+            background-color: #28a745; /* Verde profesional */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #1e7e34; /* Verde oscuro al pasar el mouse */
+        }
+        .result {
+            margin-top: 20px;
+            display: none;
+            background-color: rgba(248, 249, 250, 0.95); /* Fondo claro para los datos */
+            padding: 25px; /* Mejor margen interno */
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            table-layout: fixed; /* Asegura que las columnas se ajusten automáticamente */
+            word-wrap: break-word; /* Permite que el texto se divida en varias líneas */
+        }
+        .result th, .result td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            word-wrap: break-word; /* Asegura que el texto no se salga de los cuadros */
+        }
+        .result th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .image-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #28a745; /* Verde profesional */
+            color: white;
+            position: relative; /* Cambiado a relativo para evitar problemas */
+            bottom: 0;
+            width: 100%;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        /* Estilos responsivos para dispositivos móviles */
+        @media (max-width: 768px) {
+            header img {
+                max-width: 150px;
+            }
+            main {
+                padding: 15px;
+            }
+            input[type="text"], button {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .result {
+                padding: 15px;
+            }
+            .result table {
+                font-size: 14px;
+            }
+            .image-container img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="1.jpg" alt="Logo de Servientrega" id="logo">
+    </header>
+    <main>
+        <h1>Recibo del Cliente</h1>
+        <form id="trackingForm">
+            <label for="trackingNumber">Número de Guía (10 dígitos):</label>
+            <input type="text" id="trackingNumber" placeholder="Ingrese el número de guía" maxlength="10" required>
+            <button type="submit">Consultar</button>
+        </form>
+        <div class="result" id="result">
+            <h2>Datos del Cliente</h2>
+            <table>
+                <tr>
+                    <th>Campo</th>
+                    <th>Información</th>
+                </tr>
+                <tr>
+                    <td>Número de Guía:</td>
+                    <td><span id="guia"></span></td>
+                </tr>
+                <tr>
+                    <td>Remitente/Origen:</td>
+                    <td><span id="remitente"></span></td>
+                </tr>
+                <tr>
+                    <td>Cédula Remitente:</td>
+                    <td><span id="cedulaRemitente"></span></td>
+                </tr>
+                <tr>
+                    <td>Teléfono Remitente:</td>
+                    <td><span id="telefonoRemitente"></span></td>
+                </tr>
+                <tr>
+                    <td>Correo Remitente:</td>
+                    <td><span id="correoRemitente"></span></td>
+                </tr>
+                <tr>
+                    <td>Dirección Remitente:</td>
+                    <td><span id="direccionRemitente"></span></td>
+                </tr>
+                <tr>
+                    <td>Ciudad de Recogida:</td>
+                    <td><span id="ciudad"></span></td>
+                </tr>
+                <tr>
+                    <td>Destinatario:</td>
+                    <td><span id="destinatario"></span></td>
+                </tr>
+                <tr>
+                    <td>Cédula Destinatario:</td>
+                    <td><span id="cedulaDestinatario"></span></td>
+                </tr>
+                <tr>
+                    <td>Teléfono Destinatario:</td>
+                    <td><span id="telefonoDestinatario"></span></td>
+                </tr>
+                <tr>
+                    <td>Correo Destinatario:</td>
+                    <td><span id="correoDestinatario"></span></td>
+                </tr>
+                <tr>
+                    <td>Dirección Destinatario:</td>
+                    <td><span id="direccionDestinatario"></span></td>
+                </tr>
+                <tr>
+                    <td>Ciudad de Entrega:</td>
+                    <td><span id="entrega"></span></td>
+                </tr>
+            </table>
+        </div>
+        <!-- Contenedor para la imagen adicional -->
+        <div class="image-container">
+            <img src="SERVIENTREGA.jpg" alt="Imagen adicional">
+        </div>
+    </main>
+    <footer>
+        <p>Contacto Oficial: 018000-123456</p>
+        <p>Email: contacto@servientrega.com</p>
+        <p>Misión: Brindar soluciones logísticas innovadoras y confiables.</p>
+        <p>Valores: Compromiso, Integridad, Excelencia, Sostenibilidad.</p>
+        <p>Derechos Reservados &copy; 2025 Servientrega Centro de Soluciones</p>
+    </footer>
+
+    <!-- Script -->
+    <script>
+        // Función para generar un número de cédula aleatorio (10 dígitos)
+        function generarCedula() {
+            return Math.floor(1000000000 + Math.random() * 9000000000);
+        }
+
+        // Datos ficticios con nombres completos, cédulas aleatorias y ubicaciones de Google Maps
+        const data = {
+            "1234567890": {
+                remitente: "Juan Carlos Pérez Gómez",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3101234567",
+                correoRemitente: "juan.perez@example.com",
+                direccionRemitente: "Calle 123 #45-67, Bogotá",
+                ciudadRecogida: "Bogotá",
+                destinatario: "María Elena López Ramírez",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3119876543",
+                correoDestinatario: "maria.lopez@example.com",
+                direccionDestinatario: "Carrera 78 #90-12, Medellín",
+                ciudadEntrega: "Medellín"
+            },
+            "9876543210": {
+                remitente: "Carlos Alberto Gómez Díaz",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3123456789",
+                correoRemitente: "carlos.gomez@example.com",
+                direccionRemitente: "Calle 45 #67-89, Cali",
+                ciudadRecogida: "Cali",
+                destinatario: "Laura Sofía Ramírez Torres",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3132109876",
+                correoDestinatario: "laura.ramirez@example.com",
+                direccionDestinatario: "Carrera 12 #34-56, Barranquilla",
+                ciudadEntrega: "Barranquilla"
+            },
+            "1122334455": {
+                remitente: "Ana María Torres García",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3145678901",
+                correoRemitente: "ana.torres@example.com",
+                direccionRemitente: "Calle 78 #90-12, Medellín",
+                ciudadRecogida: "Medellín",
+                destinatario: "Pedro José Sánchez Ramírez",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3156789012",
+                correoDestinatario: "pedro.sanchez@example.com",
+                direccionDestinatario: "Carrera 34 #56-78, Cartagena",
+                ciudadEntrega: "Cartagena"
+            },
+            "5566778899": {
+                remitente: "Luisa Fernanda Fernández García",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3167890123",
+                correoRemitente: "luisa.fernandez@example.com",
+                direccionRemitente: "Calle 90 #12-34, Barranquilla",
+                ciudadRecogida: "Barranquilla",
+                destinatario: "Andrés Felipe Rodríguez López",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3178901234",
+                correoDestinatario: "andres.rodriguez@example.com",
+                direccionDestinatario: "Carrera 56 #78-90, Santa Marta",
+                ciudadEntrega: "Santa Marta"
+            },
+            "2233445566": {
+                remitente: "Diego Armando Castro Vargas",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3189012345",
+                correoRemitente: "diego.castro@example.com",
+                direccionRemitente: "Calle 12 #34-56, Cartagena",
+                ciudadRecogida: "Cartagena",
+                destinatario: "Camila Andrea Vargas López",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3190123456",
+                correoDestinatario: "camila.vargas@example.com",
+                direccionDestinatario: "Carrera 78 #90-12, Cali",
+                ciudadEntrega: "Cali"
+            },
+            "7788990011": {
+                remitente: "Sofía Isabel Herrera Mendoza",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3201234567",
+                correoRemitente: "sofia.herrera@example.com",
+                direccionRemitente: "Calle 34 #56-78, Santa Marta",
+                ciudadRecogida: "Santa Marta",
+                destinatario: "Javier Esteban Mendoza Ramírez",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3212345678",
+                correoDestinatario: "javier.mendoza@example.com",
+                direccionDestinatario: "Carrera 90 #12-34, Bogotá",
+                ciudadEntrega: "Bogotá"
+            },
+            "3344556677": {
+                remitente: "Miguel Ángel González Pérez",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3223456789",
+                correoRemitente: "miguel.angel@example.com",
+                direccionRemitente: "Calle 56 #78-90, Bogotá",
+                ciudadRecogida: "Bogotá",
+                destinatario: "Valentina Sofía Ruiz López",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3234567890",
+                correoDestinatario: "valentina.ruiz@example.com",
+                direccionDestinatario: "Carrera 12 #34-56, Pereira",
+                ciudadEntrega: "Pereira"
+            },
+            "8899001122": {
+                remitente: "Carolina Andrea Díaz Ramírez",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3245678901",
+                correoRemitente: "carolina.diaz@example.com",
+                direccionRemitente: "Calle 78 #90-12, Pereira",
+                ciudadRecogida: "Pereira",
+                destinatario: "Sebastián David Morales López",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3256789012",
+                correoDestinatario: "sebastian.morales@example.com",
+                direccionDestinatario: "Carrera 34 #56-78, Bucaramanga",
+                ciudadEntrega: "Bucaramanga"
+            },
+            "4455667788": {
+                remitente: "Gabriela Natalia Navarro Torres",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3267890123",
+                correoRemitente: "gabriela.navarro@example.com",
+                direccionRemitente: "Calle 90 #12-34, Bucaramanga",
+                ciudadRecogida: "Bucaramanga",
+                destinatario: "Daniel Alejandro Castro Ramírez",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3278901234",
+                correoDestinatario: "daniel.castro@example.com",
+                direccionDestinatario: "Carrera 56 #78-90, Cúcuta",
+                ciudadEntrega: "Cúcuta"
+            },
+            "6677889900": {
+                remitente: "Ricardo Andrés López Gómez",
+                cedulaRemitente: generarCedula(),
+                telefonoRemitente: "3289012345",
+                correoRemitente: "ricardo.lopez@example.com",
+                direccionRemitente: "Calle 12 #34-56, Cúcuta",
+                ciudadRecogida: "Cúcuta",
+                destinatario: "Isabel Cristina Hernández Ramírez",
+                cedulaDestinatario: generarCedula(),
+                telefonoDestinatario: "3290123456",
+                correoDestinatario: "isabel.hernandez@example.com",
+                direccionDestinatario: "Carrera 78 #90-12, Manizales",
+                ciudadEntrega: "Manizales"
+            }
+        };
+
+        // Manejar el envío del formulario
+        document.getElementById('trackingForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const trackingNumber = document.getElementById('trackingNumber').value;
+            const resultDiv = document.getElementById('result');
+            if (data[trackingNumber]) {
+                const info = data[trackingNumber];
+                document.getElementById('guia').textContent = trackingNumber;
+                document.getElementById('remitente').textContent = info.remitente;
+                document.getElementById('cedulaRemitente').textContent = info.cedulaRemitente;
+                document.getElementById('telefonoRemitente').textContent = info.telefonoRemitente;
+                document.getElementById('correoRemitente').textContent = info.correoRemitente;
+                document.getElementById('direccionRemitente').textContent = info.direccionRemitente;
+                document.getElementById('ciudad').textContent = info.ciudadRecogida;
+                document.getElementById('destinatario').textContent = info.destinatario;
+                document.getElementById('cedulaDestinatario').textContent = info.cedulaDestinatario;
+                document.getElementById('telefonoDestinatario').textContent = info.telefonoDestinatario;
+                document.getElementById('correoDestinatario').textContent = info.correoDestinatario;
+                document.getElementById('direccionDestinatario').textContent = info.direccionDestinatario;
+                document.getElementById('entrega').textContent = info.ciudadEntrega;
+
+                resultDiv.style.display = 'block';
+            } else {
+                alert('Número de guía no encontrado.');
+            }
+        });
+
+        // Cambiar el logo manualmente
+        document.getElementById('logo').src = '1.jpg'; // Cambia '1.jpg' por la ruta de tu logo
+    </script>
+</body>
+</html>
