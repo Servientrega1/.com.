@@ -102,6 +102,21 @@
             margin: 5px 0;
             font-size: 14px;
         }
+        /* Estilo para los botones de WhatsApp */
+        .whatsapp-button {
+            display: inline-block;
+            background-color: #25D366;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .whatsapp-button:hover {
+            background-color: #1DA851;
+        }
         /* Estilos para la ventana emergente */
         .fullscreen-image {
             display: none;
@@ -193,6 +208,12 @@
         <p>Misión: Brindar soluciones logísticas innovadoras y confiables.</p>
         <p>Valores: Compromiso, Integridad, Excelencia, Sostenibilidad.</p>
         <p>Derechos Reservados &copy; 2025 Servientrega Centro de Soluciones</p>
+        <!-- Botones de WhatsApp -->
+        <p>
+            <a href="https://wa.me/573204200332"  class="whatsapp-button" target="_blank">WhatsApp +57 320 4200332</a>
+            <!-- Espacio para agregar otro número de WhatsApp -->
+            <a href="#" class="whatsapp-button" id="additionalWhatsApp" style="display: none;" target="_blank">WhatsApp Adicional</a>
+        </p>
     </footer>
 
     <!-- Ventana emergente para la imagen -->
@@ -231,6 +252,20 @@
                 this.style.display = "none";
             }
         });
+
+        // Función para agregar otro número de WhatsApp manualmente
+        function agregarWhatsApp(numero) {
+            const additionalWhatsApp = document.getElementById("additionalWhatsApp");
+            if (numero) {
+                additionalWhatsApp.href = `https://wa.me/${numero}`; 
+                additionalWhatsApp.textContent = `WhatsApp ${numero}`;
+                additionalWhatsApp.style.display = "inline-block";
+            }
+        }
+
+        // Ejemplo: Agregar otro número de WhatsApp manualmente
+        // Descomenta la siguiente línea y reemplaza "57XXXXXXXXX" por el número deseado
+        // agregarWhatsApp("573208252493");
     </script>
 </body>
 </html>
